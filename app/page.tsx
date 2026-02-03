@@ -21,18 +21,18 @@ export default async function HomePage() {
               <>
                 <Link href="/account">
                   <Button variant="outline" size="sm">
-                    Account
+                    Compte
                   </Button>
                 </Link>
                 <Link href="/dashboard">
                   <Button variant="outline" size="sm">
-                    Dashboard
+                    Tableau de bord
                   </Button>
                 </Link>
               </>
             ) : (
               <Link href="/login">
-                <Button size="sm">Log in</Button>
+                <Button size="sm">Se connecter</Button>
               </Link>
             )}
           </nav>
@@ -43,21 +43,21 @@ export default async function HomePage() {
       <main className="flex flex-1 items-center justify-center">
         <div className="container max-w-2xl text-center px-4">
           <h1 className="text-4xl font-bold mb-4">
-            Welcome{session?.user ? `, ${session.user.name}` : ""}
+            Bienvenue{session?.user ? `, ${session.user.name}` : ""}
           </h1>
           <p className="text-muted-foreground mb-8">
             {session?.user
-              ? "You are logged in."
-              : "Please log in to access your account."}
+              ? "Vous êtes connecté."
+              : "Veuillez vous connecter pour accéder à votre compte."}
           </p>
           {!session?.user && (
             <div className="flex gap-4 justify-center">
               <Link href="/login">
-                <Button size="lg">Log in</Button>
+                <Button size="lg">Se connecter</Button>
               </Link>
               <Link href="/signup">
                 <Button size="lg" variant="outline">
-                  Sign up
+                  S'inscrire
                 </Button>
               </Link>
             </div>

@@ -6,54 +6,89 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { IconLoader } from "@tabler/icons-react";
 import { Separator } from "@/components/ui/separator";
+import { updateProfileAction } from "@/lib/actions/profile";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Terminal } from "lucide-react";
 
 interface AccountFormProps {
-    initialName: string;
+    initialFirstName: string;
+    initialLastName: string;
     initialEmail: string;
 }
 
 export default function AccountForm({
-    initialName,
+    initialFirstName,
+    initialLastName,
     initialEmail,
 }: AccountFormProps) {
-    const [fullname, setFullname] = useState(initialName);
+    const [firstName, setFirstName] = useState(initialFirstName);
+    const [lastName, setLastName] = useState(initialLastName);
     const [email, setEmail] = useState(initialEmail);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [success, setSuccess] = useState(false);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         setLoading(true);
         setError("");
+        setSuccess(false);
 
-        // TODO: Implement update profile server action
-        // const result = await updateProfileAction(fullname, email);
+        const result = await updateProfileAction(firstName, lastName);
 
-        console.log("Update profile:", { fullname, email });
+        if (result.success) {
+            setSuccess(true);
+            setTimeout(() => setSuccess(false), 3000);
+        } else {
+            setError(result.error || "Impossible de mettre à jour le profil");
+        }
 
-        setTimeout(() => {
-            setLoading(false);
-            alert("Profile updated successfully!");
-        }, 1000);
+        setLoading(false);
     }
 
     return (
         <>
-            <h1 className="text-lg font-medium">Account Setting</h1>
+            <h1 className="text-lg font-medium">Paramètres du compte</h1>
             <p className="text-sm text-muted-foreground mb-2">
-                Edit your account information
+                Modifiez les informations de votre compte
             </p>
             <Separator className="mb-4" />
+
+            {error && (
+                <Alert className="mb-4 border border-red-500" variant="destructive">
+                    <Terminal className="h-4 w-4" />
+                    <AlertDescription>{error}</AlertDescription>
+                </Alert>
+            )}
+
+            {success && (
+                <Alert className="mb-4 border border-green-500 bg-green-50 text-green-900">
+                    <Terminal className="h-4 w-4 text-green-600" />
+                    <AlertDescription>Profil mis à jour avec succès !</AlertDescription>
+                </Alert>
+            )}
+
             <form className="lg:w-1/2" onSubmit={handleSubmit}>
                 <div className="flex flex-col gap-6">
                     <div className="grid gap-3">
-                        <Label htmlFor="name">Full Name</Label>
+                        <Label htmlFor="firstName">Prénom</Label>
                         <Input
-                            onChange={(e) => setFullname(e.target.value)}
-                            value={fullname}
-                            id="name"
+                            onChange={(e) => setFirstName(e.target.value)}
+                            value={firstName}
+                            id="firstName"
                             type="text"
-                            placeholder="Achour Meguenni"
+                            placeholder="Achour"
+                            required
+                        />
+                    </div>
+                    <div className="grid gap-3">
+                        <Label htmlFor="lastName">Nom</Label>
+                        <Input
+                            onChange={(e) => setLastName(e.target.value)}
+                            value={lastName}
+                            id="lastName"
+                            type="text"
+                            placeholder="Meguenni"
                             required
                         />
                     </div>
@@ -64,9 +99,13 @@ export default function AccountForm({
                             value={email}
                             id="email"
                             type="email"
-                            placeholder="me@example.com"
+                            placeholder="email@exemple.com"
                             required
+                            disabled // Email update logic usually requires verification, keeping it disabled for now or simpler logic
                         />
+                        <p className="text-[0.8rem] text-muted-foreground">
+                            L'adresse email ne peut pas être modifiée pour le moment.
+                        </p>
                     </div>
 
                     <div className="flex flex-col gap-3">
@@ -74,15 +113,15 @@ export default function AccountForm({
                             {loading ? (
                                 <IconLoader className="animate-spin" stroke={2} />
                             ) : (
-                                "Save"
+                                "Enregistrer"
                             )}
                         </Button>
                     </div>
                 </div>
                 <div className="mt-4 text-center text-sm">
-                    Forgot your password?{" "}
+                    Mot de passe oublié ?{" "}
                     <a href="/login" className="underline underline-offset-4">
-                        Reset password
+                        Réinitialiser le mot de passe
                     </a>
                 </div>
             </form>

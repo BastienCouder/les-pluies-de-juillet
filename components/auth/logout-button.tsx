@@ -18,7 +18,7 @@ export default function LogoutButton() {
 
   return (
     <Button onClick={handleLogout} variant="destructive" className="w-full" disabled={loading}>
-      {loading ? "Logging out..." : "Log out"}
+      {loading ? "Déconnexion..." : "Se déconnecter"}
     </Button>
   );
 }
