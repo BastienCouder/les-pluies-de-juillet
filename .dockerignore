@@ -1,0 +1,5 @@
+# Add .env to gitignore
+.env
+
+# Docker volumes
+postgres_data/
