@@ -30,7 +30,7 @@ export default function DeleteAccountButton() {
             router.push("/");
             router.refresh();
         } else {
-            setError(result.error);
+            setError(result?.error || "Erreur inconnue");
             setLoading(false);
         }
     }

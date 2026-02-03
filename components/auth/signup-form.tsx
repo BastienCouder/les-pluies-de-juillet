@@ -31,15 +31,18 @@ export function SignupForm({
   const [password, setPassword] = useState("");
   const [rgpdConsent, setRgpdConsent] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError("");
+    setFieldErrors({});
 
     if (!rgpdConsent) {
       setError("Vous devez accepter la politique de confidentialité");
+      setFieldErrors({ rgpdConsent: ["Vous devez accepter la politique de confidentialité"] });
       setLoading(false);
       return;
     }
@@ -50,7 +53,8 @@ export function SignupForm({
       router.push("/dashboard");
       router.refresh();
     } else {
-      setError(result.error);
+      setError(result?.error || "Erreur inconnue");
+      setFieldErrors(result?.fieldErrors || {});
       setLoading(false);
     }
   }
@@ -71,40 +75,47 @@ export function SignupForm({
           )}
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
-              <div className="grid gap-3">
-                <Label htmlFor="firstName">Prénom</Label>
-                <Input
-                  onChange={(e) => setFirstName(e.target.value)}
-                  value={firstName}
-                  id="firstName"
-                  type="text"
-                  required
-                />
+              <div className="flex flex-row gap-6">
+                <div className="grid gap-3">
+                  <Label htmlFor="firstName" className={fieldErrors.firstName ? "text-red-500" : ""}>Prénom</Label>
+                  <Input
+                    onChange={(e) => setFirstName(e.target.value)}
+                    value={firstName}
+                    id="firstName"
+                    type="text"
+                    className={fieldErrors.firstName ? "border-red-500" : ""}
+
+                  />
+                  {fieldErrors.firstName && <p className="text-xs text-red-500 font-medium">{fieldErrors.firstName[0]}</p>}
+                </div>
+                <div className="grid gap-3">
+                  <Label htmlFor="lastName" className={fieldErrors.lastName ? "text-red-500" : ""}>Nom</Label>
+                  <Input
+                    onChange={(e) => setLastName(e.target.value)}
+                    value={lastName}
+                    id="lastName"
+                    type="text"
+                    className={fieldErrors.lastName ? "border-red-500" : ""}
+
+                  />
+                  {fieldErrors.lastName && <p className="text-xs text-red-500 font-medium">{fieldErrors.lastName[0]}</p>}
+                </div>
               </div>
               <div className="grid gap-3">
-                <Label htmlFor="lastName">Nom</Label>
-                <Input
-                  onChange={(e) => setLastName(e.target.value)}
-                  value={lastName}
-                  id="lastName"
-                  type="text"
-                  required
-                />
-              </div>
-              <div className="grid gap-3">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className={fieldErrors.email ? "text-red-500" : ""}>Email</Label>
                 <Input
                   onChange={(e) => setEmail(e.target.value)}
                   value={email}
                   id="email"
                   type="email"
                   placeholder="email@exemple.com"
-                  required
+                  className={fieldErrors.email ? "border-red-500" : ""}
                 />
+                {fieldErrors.email && <p className="text-xs text-red-500 font-medium">{fieldErrors.email[0]}</p>}
               </div>
               <div className="grid gap-3">
                 <div className="flex items-center">
-                  <Label htmlFor="password">Mot de passe</Label>
+                  <Label htmlFor="password" className={fieldErrors.password ? "text-red-500" : ""}>Mot de passe</Label>
                   <a
                     href="#"
                     className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
@@ -117,28 +128,33 @@ export function SignupForm({
                   value={password}
                   id="password"
                   type="password"
-                  required
+                  className={fieldErrors.password ? "border-red-500" : ""}
                 />
+                {fieldErrors.password && <p className="text-xs text-red-500 font-medium">{fieldErrors.password[0]}</p>}
               </div>
-              <div className="flex items-start space-x-2">
-                <Checkbox
-                  id="rgpd"
-                  checked={rgpdConsent}
-                  onCheckedChange={(checked) => setRgpdConsent(checked as boolean)}
-                  required
-                />
-                <Label
-                  htmlFor="rgpd"
-                  className="text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  J'accepte la{" "}
-                  <a href="/privacy" className="underline underline-offset-4">
-                    politique de confidentialité
-                  </a>
-                </Label>
+              <div className="flex flex-col gap-2">
+                <div className="flex items-start space-x-2">
+                  <Checkbox
+                    id="rgpd"
+                    checked={rgpdConsent}
+                    onCheckedChange={(checked) => setRgpdConsent(checked as boolean)}
+                    className={fieldErrors.rgpdConsent ? "border-red-500" : ""}
+
+                  />
+                  <Label
+                    htmlFor="rgpd"
+                    className={cn("text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70", fieldErrors.rgpdConsent ? "text-red-500" : "")}
+                  >
+                    J'accepte la{" "}
+                    <a href="/privacy" className="underline underline-offset-4">
+                      politique de confidentialité
+                    </a>
+                  </Label>
+                </div>
+                {fieldErrors.rgpdConsent && <p className="text-xs text-red-500 font-medium ml-6">{fieldErrors.rgpdConsent[0]}</p>}
               </div>
               <div className="flex flex-col gap-3">
-                <Button disabled={loading} type="submit" className="w-full">
+                <Button disabled={loading || !rgpdConsent} type="submit" className="w-full">
                   {loading ? (
                     <IconLoader className="animate-spin" stroke={2} />
                   ) : (

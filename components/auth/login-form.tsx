@@ -27,21 +27,23 @@ export function LoginForm({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError("");
+    setFieldErrors({});
 
     const result = await signInAction(email, password);
 
     if (result.success) {
-      // Redirect to dashboard on success
       router.push("/dashboard");
-      router.refresh(); // Refresh to update Server Components
+      router.refresh();
     } else {
-      setError(result.error);
+      setError(result?.error || "Erreur inconnue");
+      setFieldErrors(result?.fieldErrors || {});
       setLoading(false);
     }
   }
@@ -65,19 +67,22 @@ export function LoginForm({
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className={fieldErrors.email ? "text-red-500" : ""}>Email</Label>
                 <Input
                   onChange={(e) => setEmail(e.target.value)}
                   value={email}
                   id="email"
                   type="email"
                   placeholder="moi@exemple.com"
-                  required
+                  className={fieldErrors.email ? "border-red-500" : ""}
                 />
+                {fieldErrors.email && (
+                  <p className="text-xs text-red-500 font-medium">{fieldErrors.email[0]}</p>
+                )}
               </div>
               <div className="grid gap-3">
                 <div className="flex items-center">
-                  <Label htmlFor="password">Mot de passe</Label>
+                  <Label htmlFor="password" className={fieldErrors.password ? "text-red-500" : ""}>Mot de passe</Label>
                   <a
                     href="#"
                     className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
@@ -90,8 +95,11 @@ export function LoginForm({
                   value={password}
                   id="password"
                   type="password"
-                  required
+                  className={fieldErrors.password ? "border-red-500" : ""}
                 />
+                {fieldErrors.password && (
+                  <p className="text-xs text-red-500 font-medium">{fieldErrors.password[0]}</p>
+                )}
               </div>
               <div className="flex flex-col gap-3">
                 <Button disabled={loading} type="submit" className="w-full">

@@ -1,7 +1,6 @@
 import { pgTable, text, timestamp, boolean } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
-// User table
 export const user = pgTable("user", {
     id: text("id").primaryKey(),
     name: text("name").notNull(),
@@ -12,7 +11,6 @@ export const user = pgTable("user", {
     updatedAt: timestamp("updatedAt").notNull(),
 });
 
-// Account table
 export const account = pgTable("account", {
     id: text("id").primaryKey(),
     accountId: text("accountId").notNull(),
@@ -29,7 +27,6 @@ export const account = pgTable("account", {
     updatedAt: timestamp("updatedAt").notNull(),
 });
 
-// Session table
 export const session = pgTable("session", {
     id: text("id").primaryKey(),
     expiresAt: timestamp("expiresAt").notNull(),
@@ -41,7 +38,6 @@ export const session = pgTable("session", {
     userId: text("userId").notNull(),
 });
 
-// Verification table
 export const verification = pgTable("verification", {
     id: text("id").primaryKey(),
     identifier: text("identifier").notNull(),
@@ -51,7 +47,6 @@ export const verification = pgTable("verification", {
     updatedAt: timestamp("updatedAt"),
 });
 
-// Relations
 export const userRelations = relations(user, ({ many }) => ({
     accounts: many(account),
     sessions: many(session),

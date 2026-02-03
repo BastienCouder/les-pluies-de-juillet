@@ -7,9 +7,20 @@ import { profile } from "@/lib/db/schema/profile";
 import { user } from "@/lib/db/schema/auth";
 import { userConsent } from "@/lib/db/schema/consent";
 import { eq } from "drizzle-orm";
+import { translateAuthError } from "@/lib/utils";
+import { signInSchema, signUpSchema } from "@/lib/validations/auth";
 
 export async function signInAction(email: string, password: string) {
     try {
+        const validation = signInSchema.safeParse({ email, password });
+        if (!validation.success) {
+            return {
+                success: false,
+                error: "Détails incorrects",
+                fieldErrors: validation.error.flatten().fieldErrors,
+            };
+        }
+
         const result = await auth.api.signInEmail({
             body: {
                 email,
@@ -21,7 +32,7 @@ export async function signInAction(email: string, password: string) {
     } catch (error: any) {
         return {
             success: false,
-            error: error.message || "Échec de la connexion",
+            error: translateAuthError(error),
         };
     }
 }
@@ -34,6 +45,22 @@ export async function signUpAction(
     rgpdConsent: boolean
 ) {
     try {
+        const validation = signUpSchema.safeParse({
+            email,
+            password,
+            firstName,
+            lastName,
+            rgpdConsent
+        });
+
+        if (!validation.success) {
+            return {
+                success: false,
+                error: "Veuillez vérifier les champs.",
+                fieldErrors: validation.error.flatten().fieldErrors,
+            };
+        }
+
         const result = await auth.api.signUpEmail({
             body: {
                 email,
@@ -65,7 +92,7 @@ export async function signUpAction(
     } catch (error: any) {
         return {
             success: false,
-            error: error.message || "Échec de l'inscription",
+            error: translateAuthError(error),
         };
     }
 }
@@ -98,12 +125,28 @@ export async function deleteAccountAction() {
             };
         }
 
-        await db
-            .update(user)
-            .set({
-                deletedAt: new Date(),
-            })
-            .where(eq(user.id, session.user.id));
+        const anonymizedId = `deleted-${session.user.id}-${Date.now()}`;
+
+        await db.transaction(async (tx) => {
+            await tx
+                .update(user)
+                .set({
+                    email: `${anonymizedId}@deleted.local`,
+                    name: "Deleted User",
+                    deletedAt: new Date(),
+                    updatedAt: new Date(),
+                })
+                .where(eq(user.id, session.user.id));
+
+            await tx
+                .update(profile)
+                .set({
+                    firstName: "Deleted",
+                    lastName: "User",
+                    updatedAt: new Date(),
+                })
+                .where(eq(profile.userId, session.user.id));
+        });
 
         await auth.api.signOut({
             headers: await headers(),
