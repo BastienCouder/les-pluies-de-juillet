@@ -24,7 +24,8 @@ export function SignupForm({
 }: React.ComponentProps<"div">) {
   const router = useRouter();
 
-  const [fullname, setFullname] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -35,11 +36,11 @@ export function SignupForm({
     setLoading(true);
     setError("");
 
-    const result = await signUpAction(email, password, fullname);
+    const result = await signUpAction(email, password, firstName, lastName);
 
     if (result.success) {
       router.push("/dashboard");
-      router.refresh(); // Refresh to update Server Components
+      router.refresh();
     } else {
       setError(result.error);
       setLoading(false);
@@ -63,13 +64,23 @@ export function SignupForm({
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
-                <Label htmlFor="name">Full Name</Label>
+                <Label htmlFor="firstName">First Name</Label>
                 <Input
-                  onChange={(e) => setFullname(e.target.value)}
-                  value={fullname}
-                  id="name"
+                  onChange={(e) => setFirstName(e.target.value)}
+                  value={firstName}
+                  id="firstName"
                   type="text"
-                  placeholder="Achour Meguenni"
+                  placeholder="Achour"
+                  required
+                />
+              </div>
+              <div className="grid gap-3">
+                <Label htmlFor="lastName">Last Name</Label>
+                <Input
+                  onChange={(e) => setLastName(e.target.value)}
+                  value={lastName}
+                  id="lastName"
+                  type="text"
                   required
                 />
               </div>

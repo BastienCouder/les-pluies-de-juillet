@@ -2,6 +2,8 @@
 
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
+import { db } from "@/lib/db";
+import { profile } from "@/lib/db/schema/profile";
 
 export async function signInAction(email: string, password: string) {
     try {
@@ -24,16 +26,27 @@ export async function signInAction(email: string, password: string) {
 export async function signUpAction(
     email: string,
     password: string,
-    name: string
+    firstName: string,
+    lastName: string
 ) {
     try {
         const result = await auth.api.signUpEmail({
             body: {
                 email,
                 password,
-                name,
+                name: `${firstName} ${lastName}`,
             },
         });
+
+        if (result?.user?.id) {
+            await db.insert(profile).values({
+                userId: result.user.id,
+                firstName,
+                lastName,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            });
+        }
 
         return { success: true, data: result };
     } catch (error: any) {
