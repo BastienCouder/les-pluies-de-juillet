@@ -61,64 +61,62 @@ export function SignupForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
-        <CardHeader>
-          <CardTitle>Créer un compte</CardTitle>
-          <CardDescription>Commencez avec votre nouveau compte</CardDescription>
+      <Card className="border-3 border-accent bg-primary">
+        <CardHeader className="space-y-1 text-center">
+          <CardTitle className="font-display text-2xl font-bold uppercase tracking-wider">Créer un compte</CardTitle>
+          <CardDescription className="text-base font-medium text-black">Commencez avec votre nouveau compte</CardDescription>
         </CardHeader>
         <CardContent>
           {error && (
-            <Alert className="mb-4 border border-red-500" variant="destructive">
+            <Alert className="mb-4 border-2 border-white bg-white/10 text-white rounded-none" variant="default">
               <Terminal className="h-4 w-4" />
-              <AlertDescription>{error}</AlertDescription>
+              <AlertDescription className="font-semibold text-white">{error}</AlertDescription>
             </Alert>
           )}
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
               <div className="flex flex-row gap-6">
-                <div className="grid gap-3">
-                  <Label htmlFor="firstName" className={fieldErrors.firstName ? "text-red-500" : ""}>Prénom</Label>
+                <div className="grid gap-3 w-full">
+                  <Label htmlFor="firstName" className="font-bold uppercase tracking-wide text-xs">Prénom</Label>
                   <Input
                     onChange={(e) => setFirstName(e.target.value)}
                     value={firstName}
                     id="firstName"
                     type="text"
-                    className={fieldErrors.firstName ? "border-red-500" : ""}
-
+                    className={cn("focus-visible:ring-accent", fieldErrors.firstName ? "border-white focus-visible:ring-white" : "border-input")}
                   />
-                  {fieldErrors.firstName && <p className="text-xs text-red-500 font-medium">{fieldErrors.firstName[0]}</p>}
+                  {fieldErrors.firstName && <p className="text-xs text-white font-bold">{fieldErrors.firstName[0]}</p>}
                 </div>
-                <div className="grid gap-3">
-                  <Label htmlFor="lastName" className={fieldErrors.lastName ? "text-red-500" : ""}>Nom</Label>
+                <div className="grid gap-3 w-full">
+                  <Label htmlFor="lastName" className="font-bold uppercase tracking-wide text-xs">Nom</Label>
                   <Input
                     onChange={(e) => setLastName(e.target.value)}
                     value={lastName}
                     id="lastName"
                     type="text"
-                    className={fieldErrors.lastName ? "border-red-500" : ""}
-
+                    className={cn("focus-visible:ring-accent", fieldErrors.lastName ? "border-white focus-visible:ring-white" : "border-input")}
                   />
-                  {fieldErrors.lastName && <p className="text-xs text-red-500 font-medium">{fieldErrors.lastName[0]}</p>}
+                  {fieldErrors.lastName && <p className="text-xs text-white font-bold">{fieldErrors.lastName[0]}</p>}
                 </div>
               </div>
               <div className="grid gap-3">
-                <Label htmlFor="email" className={fieldErrors.email ? "text-red-500" : ""}>Email</Label>
+                <Label htmlFor="email" className="font-bold uppercase tracking-wide text-xs">Email</Label>
                 <Input
                   onChange={(e) => setEmail(e.target.value)}
                   value={email}
                   id="email"
                   type="email"
                   placeholder="email@exemple.com"
-                  className={fieldErrors.email ? "border-red-500" : ""}
+                  className={cn("focus-visible:ring-accent", fieldErrors.email ? "border-white focus-visible:ring-white" : "border-input")}
                 />
-                {fieldErrors.email && <p className="text-xs text-red-500 font-medium">{fieldErrors.email[0]}</p>}
+                {fieldErrors.email && <p className="text-xs text-white font-bold">{fieldErrors.email[0]}</p>}
               </div>
               <div className="grid gap-3">
                 <div className="flex items-center">
-                  <Label htmlFor="password" className={fieldErrors.password ? "text-red-500" : ""}>Mot de passe</Label>
+                  <Label htmlFor="password" className="font-bold uppercase tracking-wide text-xs">Mot de passe</Label>
                   <a
                     href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                    className="ml-auto inline-block text-xs font-semibold underline-offset-4 hover:underline hover:text-accent transition-colors"
                   >
                     Mot de passe oublié ?
                   </a>
@@ -128,9 +126,9 @@ export function SignupForm({
                   value={password}
                   id="password"
                   type="password"
-                  className={fieldErrors.password ? "border-red-500" : ""}
+                  className={cn("focus-visible:ring-accent", fieldErrors.password ? "border-white focus-visible:ring-white" : "border-input")}
                 />
-                {fieldErrors.password && <p className="text-xs text-red-500 font-medium">{fieldErrors.password[0]}</p>}
+                {fieldErrors.password && <p className="text-xs text-white font-bold">{fieldErrors.password[0]}</p>}
               </div>
               <div className="flex flex-col gap-2">
                 <div className="flex items-start space-x-2">
@@ -138,37 +136,33 @@ export function SignupForm({
                     id="rgpd"
                     checked={rgpdConsent}
                     onCheckedChange={(checked) => setRgpdConsent(checked as boolean)}
-                    className={fieldErrors.rgpdConsent ? "border-red-500" : ""}
-
+                    className={cn(fieldErrors.rgpdConsent ? "border-white" : "border-black data-[state=checked]:bg-accent data-[state=checked]:text-black")}
                   />
                   <Label
                     htmlFor="rgpd"
-                    className={cn("text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70", fieldErrors.rgpdConsent ? "text-red-500" : "")}
+                    className={cn("text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70", fieldErrors.rgpdConsent ? "text-white" : "")}
                   >
                     J'accepte la{" "}
-                    <a href="/privacy" className="underline underline-offset-4">
+                    <a href="/privacy" className="underline underline-offset-4 hover:text-accent font-bold">
                       politique de confidentialité
                     </a>
                   </Label>
                 </div>
-                {fieldErrors.rgpdConsent && <p className="text-xs text-red-500 font-medium ml-6">{fieldErrors.rgpdConsent[0]}</p>}
+                {fieldErrors.rgpdConsent && <p className="text-xs text-white font-bold ml-6">{fieldErrors.rgpdConsent[0]}</p>}
               </div>
               <div className="flex flex-col gap-3">
-                <Button disabled={loading || !rgpdConsent} type="submit" className="w-full">
+                <Button disabled={loading || !rgpdConsent} type="submit" className="w-full h-12 bg-secondary text-black border-3 border-accent rounded-none uppercase font-display font-bold tracking-widest hover:bg-accent hover:border-secondary transition-all duration-300">
                   {loading ? (
                     <IconLoader className="animate-spin" stroke={2} />
                   ) : (
                     "S'inscrire"
                   )}
                 </Button>
-                <Button variant="outline" className="w-full">
-                  S'inscrire avec Google
-                </Button>
               </div>
             </div>
-            <div className="mt-4 text-center text-sm">
+            <div className="mt-6 text-center text-sm font-medium">
               Vous avez déjà un compte ?{" "}
-              <a href="/login" className="underline underline-offset-4">
+              <a href="/login" className="underline underline-offset-4 hover:text-accent transition-colors font-bold">
                 Se connecter
               </a>
             </div>

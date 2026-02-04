@@ -9,37 +9,7 @@ export default async function HomePage() {
   });
 
   return (
-    <div className="flex min-h-screen flex-col">
-      {/* Simple Header */}
-      <header className="border-b">
-        <div className="container flex h-16 items-center justify-between">
-          <div className="flex items-center">
-            <span className="font-bold text-xl">My App</span>
-          </div>
-          <nav className="flex items-center gap-2">
-            {session?.user ? (
-              <>
-                <Link href="/account">
-                  <Button variant="outline" size="sm">
-                    Compte
-                  </Button>
-                </Link>
-                <Link href="/dashboard">
-                  <Button variant="outline" size="sm">
-                    Tableau de bord
-                  </Button>
-                </Link>
-              </>
-            ) : (
-              <Link href="/login">
-                <Button size="sm">Se connecter</Button>
-              </Link>
-            )}
-          </nav>
-        </div>
-      </header>
-
-      {/* Main Content */}
+    <div className="flex flex-1 flex-col bg-primary h-full">
       <main className="flex flex-1 items-center justify-center">
         <div className="container max-w-2xl text-center px-4">
           <h1 className="text-4xl font-bold mb-4">
