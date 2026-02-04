@@ -33,8 +33,8 @@ export function TicketActions({ ticketId }: { ticketId: string }) {
         <Button
             onClick={handleChange}
             disabled={loading}
-            variant="secondary"
-            className="w-full rounded-none cursor-pointer text-xs font-bold uppercase tracking-wider bg-white/10 hover:bg-white/20 text-white border border-white/20"
+            variant="default"
+            className="w-full"
         >
             {loading ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : null}
             changer le billet

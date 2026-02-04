@@ -10,7 +10,6 @@ import { profile } from "@/lib/db/schema/index";
 import { eq } from "drizzle-orm";
 import { getUserTickets } from "@/lib/actions/commerce";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Ticket } from "lucide-react";
 import { TicketActions } from "@/components/ticketing/ticket-actions";
 import { TicketQRZoom } from "@/components/ticketing/ticket-qr-zoom";
 
@@ -84,22 +83,16 @@ export default async function AccountPage() {
                                     <TicketQRZoom qrCodeUrl={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${activeTicket.qrCode}`} />
                                 </div>
                             </CardContent>
-                            <CardFooter className="flex flex-col gap-2 pt-2 pb-6 px-6 bg-black/20">
-                                <div className="text-center w-full mb-2">
-                                    <span className="inline-block px-3 py-1 rounded-full bg-green-500/20 text-green-300 border border-green-500/30 text-xs font-bold uppercase tracking-wider">
-                                        Valide
-                                    </span>
-                                </div>
+                            <CardFooter className="flex flex-col gap-2 pt-2 pb-6 px-6">
                                 <TicketActions ticketId={activeTicket.id} />
                             </CardFooter>
                         </Card>
                     ) : (
                         <Card className="border-dashed border-2 border-muted bg-muted/5">
                             <CardContent className="flex flex-col items-center justify-center py-12 text-center gap-4">
-                                <Ticket size={48} className="text-muted-foreground/50" />
-                                <p className="text-muted-foreground">Aucun billet actif.</p>
+                                <p className="text-foreground">Aucun billet actif.</p>
                                 <Link href="/billetterie">
-                                    <Button variant="outline" className="border-accent text-accent hover:bg-accent hover:text-white uppercase font-bold text-xs">
+                                    <Button variant="outline">
                                         Aller à la billetterie
                                     </Button>
                                 </Link>

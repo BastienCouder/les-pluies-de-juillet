@@ -76,7 +76,6 @@ export async function getTicketTypes() {
             }
 
             const ownRemaining = t.capacity - t.soldCount;
-
             const realRemaining = Math.max(0, Math.min(ownRemaining, maxAvailable));
 
             return {

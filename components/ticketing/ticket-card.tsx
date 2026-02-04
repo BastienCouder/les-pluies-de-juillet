@@ -115,15 +115,22 @@ export function TicketCard({ ticket, isLoggedIn = false, isOwned = false, hasAny
                                 } else {
                                     const dayDiff = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
 
-                                    if (dayDiff <= 3) {
-                                        const startDay = start.getDate();
-                                        const endDay = end.getDate();
-                                        const month = start.toLocaleDateString('fr-FR', { month: 'long' });
+                                    const startDay = start.getDate();
+                                    const endDay = end.getDate();
+                                    const month = start.toLocaleDateString('fr-FR', { month: 'long' });
+                                    const monthIndexStrict = start.getMonth();
+                                    const endMonthIndexStrict = end.getMonth();
 
-                                        if (dayDiff === 1)
+                                    if (monthIndexStrict === endMonthIndexStrict) {
+                                        const diffDays = endDay - startDay;
+
+                                        if (diffDays === 1) {
                                             return `Valide les ${startDay} et ${endDay} ${month}`;
+                                        }
 
-                                        return `Valide les ${startDay}, ${startDay + 1} et ${endDay} ${month}`;
+                                        if (diffDays === 2) {
+                                            return `Valide les ${startDay}, ${startDay + 1} et ${endDay} ${month}`;
+                                        }
                                     }
 
                                     return `Valide du ${start.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })} au ${end.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}`;
@@ -133,8 +140,8 @@ export function TicketCard({ ticket, isLoggedIn = false, isOwned = false, hasAny
                     )}
                 </ul>
                 {ticket.remainingStock !== undefined && ticket.remainingStock < 50 && !isSoldOut && (
-                    <p className="text-orange-600 font-bold text-sm mt-4 animate-bounce">
-                        Plus que {ticket.remainingStock} places !
+                    <p className="text-white font-bold text-sm mt-4">
+                        Plus que {ticket.remainingStock} place{ticket.remainingStock > 1 ? 's' : ''} !
                     </p>
                 )}
             </CardContent>

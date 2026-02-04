@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+
 interface ConferenceCardProps {
     conference: {
         id: string;
@@ -24,12 +25,25 @@ interface ConferenceCardProps {
     };
     isInProgram?: boolean;
     isLoggedIn?: boolean;
+    allowedRanges?: { start: number, end: number }[];
+    hideCapacity?: boolean;
+    program?: boolean;
 }
 
-export function ConferenceCard({ conference, isInProgram = false, isLoggedIn = false }: ConferenceCardProps) {
+export function ConferenceCard({
+    conference,
+    isInProgram = false,
+    isLoggedIn = false,
+    allowedRanges = [],
+    hideCapacity = false,
+    program = false
+}: ConferenceCardProps) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [added, setAdded] = useState(isInProgram);
+
+    const confTime = new Date(conference.startAt).getTime();
+    const hasAccess = isLoggedIn && (allowedRanges.length === 0 ? false : allowedRanges.some(r => confTime >= r.start && confTime <= r.end));
 
     const maxCapacity = conference.maxCapacity || Infinity;
     const attendees = conference.attendees || 0;
@@ -77,10 +91,9 @@ export function ConferenceCard({ conference, isInProgram = false, isLoggedIn = f
 
             <CardHeader>
                 <div className="flex justify-between items-start gap-2">
-                    <div className="bg-secondary text-secondary-foreground text-xs font-bold px-2 py-1 rounded uppercase tracking-wider">
+                    <div className="bg-secondary text-foreground text-xs font-bold px-2 py-1 rounded uppercase tracking-wider">
                         {conference.theme}
                     </div>
-                    {added && <div className="text-green-500"><Check size={20} /></div>}
                 </div>
                 <CardTitle className="mt-2 text-xl font-display uppercase tracking-tight text-foreground">
                     {conference.title}
@@ -111,41 +124,43 @@ export function ConferenceCard({ conference, isInProgram = false, isLoggedIn = f
                         Intervenant : {conference.speakerName}
                     </p>
                 )}
-                {conference.maxCapacity && conference.maxCapacity < 1000 && (
+                {!program && !hideCapacity && hasAccess && conference.maxCapacity && conference.maxCapacity < 1000 && (
                     <div className="mt-auto pt-2">
-                        <div className="text-xs font-bold uppercase text-muted-foreground mb-1">
+                        <div className="text-xs font-bold uppercase foreground mb-1">
                             Places : {attendees} / {maxCapacity}
                         </div>
-                        <div className="w-full bg-secondary h-2 rounded-full overflow-hidden">
+                        <div className="w-full bg-accent h-2 rounded-full overflow-hidden">
                             <div
-                                className={cn("h-full transition-all", isFull ? "bg-destructive" : "bg-accent")}
+                                className={cn("h-full transition-all", isFull ? "bg-destructive" : "bg-secondary")}
                                 style={{ width: `${Math.min(100, (attendees / maxCapacity) * 100)}%` }}
                             />
                         </div>
                     </div>
                 )}
             </CardContent>
-            <CardFooter className="flex gap-2">
-                <Link href={`/conferences/${conference.id}`} className="flex-1">
-                    <Button variant="outline" className="w-full border-accent text-accent hover:bg-accent hover:text-white uppercase font-bold text-xs">
+
+            <CardFooter className="w-full flex flex-col gap-2">
+                <Link href={`/conferences/${conference.id}`} className="w-full">
+                    <Button variant="outline" className="w-full">
                         Voir la fiche
                     </Button>
                 </Link>
-                {isLoggedIn && (
+                {isLoggedIn && hasAccess && (
                     <Button
                         onClick={handleToggle}
                         disabled={loading || (isFull && !added)}
                         variant={added ? "outline" : "default"}
                         className={cn(
-                            "flex-1 uppercase font-bold tracking-wider text-xs",
-                            added ? "border-green-500/50 text-green-500 hover:text-green-600" : "bg-primary text-primary-foreground hover:bg-primary/90",
-                            isFull && !added && "opacity-50 cursor-not-allowed bg-gray-400"
+                            "w-full",
+                            added ? "bg-accent" : "",
+                            (isFull) && !added && "opacity-50 cursor-not-allowed bg-gray-400"
                         )}
                     >
                         {loading ? "..." : added ? "Retirer du programme" : isFull ? "Complet" : "Ajouter au programme"}
                     </Button>
                 )}
             </CardFooter>
+
         </Card>
     );
 }
