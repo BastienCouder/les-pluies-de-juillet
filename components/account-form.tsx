@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { updateProfileAction } from "@/lib/actions/profile";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Terminal } from "lucide-react";
+import Link from "next/link";
 
 interface AccountFormProps {
     initialFirstName: string;
@@ -48,24 +49,16 @@ export default function AccountForm({
 
     return (
         <>
-            <h1 className="text-lg font-medium">Paramètres du compte</h1>
-            <p className="text-sm text-muted-foreground mb-2">
-                Modifiez les informations de votre compte
-            </p>
-            <Separator className="mb-4" />
-
             {error && (
-                <Alert className="mb-4 border border-red-500" variant="destructive">
-                    <Terminal className="h-4 w-4" />
-                    <AlertDescription>{error}</AlertDescription>
+                <Alert className="mb-4 border-2 border-white bg-white/10 text-white rounded-none" variant="default">
+                    <AlertDescription className="font-semibold text-white">{error}</AlertDescription>
                 </Alert>
             )}
 
             {success && (
-                <Alert className="mb-4 border border-green-500 bg-green-50 text-green-900">
-                    <Terminal className="h-4 w-4 text-green-600" />
-                    <AlertDescription>Profil mis à jour avec succès !</AlertDescription>
-                </Alert>
+                    <Alert className="mb-4 border-2 border-white bg-white/10 text-white rounded-none">
+                        <AlertDescription className="text-white">Profil mis à jour avec succès !</AlertDescription>
+                    </Alert>
             )}
 
             <form className="lg:w-1/2" onSubmit={handleSubmit}>
@@ -105,7 +98,7 @@ export default function AccountForm({
                     </div>
 
                     <div className="flex flex-col gap-3">
-                        <Button disabled={loading} type="submit" className="w-full">
+                        <Button disabled={loading} type="submit">
                             {loading ? (
                                 <IconLoader className="animate-spin" stroke={2} />
                             ) : (
@@ -116,9 +109,9 @@ export default function AccountForm({
                 </div>
                 <div className="mt-4 text-center text-sm">
                     Mot de passe oublié ?{" "}
-                    <a href="/login" className="underline underline-offset-4">
+                    <Link href="/login" className="underline underline-offset-4 hover:text-accent hover:cursor-pointer hover:underline-accent">
                         Réinitialiser le mot de passe
-                    </a>
+                    </Link>
                 </div>
             </form>
         </>

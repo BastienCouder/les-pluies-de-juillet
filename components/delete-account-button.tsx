@@ -37,14 +37,11 @@ export default function DeleteAccountButton() {
 
     if (!showConfirm) {
         return (
-            <Card className="border-red-200">
-                <CardHeader>
-                    <CardTitle className="text-red-600">Supprimer le compte</CardTitle>
-                    <CardDescription>
-                        Supprimer définitivement votre compte et toutes les données associées
-                    </CardDescription>
+            <Card className="p-0 m-0 bg-primary border-none shadow-none">
+                <CardHeader className="p-0 m-0">
+                    <CardTitle className="text-white">Supprimer le compte</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-0 m-0">
                     <Button
                         variant="destructive"
                         onClick={() => setShowConfirm(true)}
@@ -59,18 +56,17 @@ export default function DeleteAccountButton() {
     }
 
     return (
-        <Card className="border-red-500">
-            <CardHeader>
-                <CardTitle className="text-red-600">Confirmer la suppression</CardTitle>
-                <CardDescription>
+        <Card className="p-0 m-0 bg-primary border-none shadow-none">
+                <CardHeader className="p-0 m-0">
+                <CardTitle className="text-white">Confirmer la suppression</CardTitle>
+                <CardDescription className="text-white">
                     Cette action est irréversible. Votre compte sera marqué comme supprimé.
                 </CardDescription>
             </CardHeader>
-            <CardContent>
+                  <CardContent className="p-0 m-0">
                 {error && (
-                    <Alert className="mb-4 border-red-500" variant="destructive">
-                        <Terminal className="h-4 w-4" />
-                        <AlertDescription>{error}</AlertDescription>
+                      <Alert className="mb-4 border-2 border-white bg-white/10 text-white rounded-none">
+                        <AlertDescription className="text-white">{error}</AlertDescription>
                     </Alert>
                 )}
                 <div className="flex gap-3">

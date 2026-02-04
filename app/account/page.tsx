@@ -12,6 +12,7 @@ import { getUserTickets } from "@/lib/actions/commerce";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Ticket } from "lucide-react";
 import { TicketActions } from "@/components/ticketing/ticket-actions";
+import { TicketQRZoom } from "@/components/ticketing/ticket-qr-zoom";
 
 export default async function AccountPage() {
     const session = await auth.api.getSession({
@@ -34,18 +35,15 @@ export default async function AccountPage() {
     return (
         <div className="container py-12 max-w-5xl">
             <div className="mb-8 flex items-center gap-4">
-                <Link href="/dashboard">
-                    <Button variant="ghost" className="text-muted-foreground hover:text-foreground">← Retour</Button>
-                </Link>
                 <h1 className="text-3xl font-bold font-display uppercase tracking-widest text-accent">Mon Compte</h1>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div className="md:col-span-2 space-y-6">
-                    <Card className="border-accent/20 bg-card/50 backdrop-blur-sm">
+                    <Card className="border-accent border-3 bg-primary">
                         <CardHeader>
                             <CardTitle className="uppercase font-display tracking-wider">Informations Personnelles</CardTitle>
-                            <CardDescription>Gérez vos informations de connexion et de profil.</CardDescription>
+                            <CardDescription className="text-foreground">Gérez vos informations de connexion et de profil.</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <AccountForm
@@ -56,10 +54,7 @@ export default async function AccountPage() {
                         </CardContent>
                     </Card>
 
-                    <Card className="border-destructive/20 bg-destructive/5">
-                        <CardHeader>
-                            <CardTitle className="text-destructive uppercase font-display tracking-wider">Zone de Danger</CardTitle>
-                        </CardHeader>
+                    <Card className="border-accent border-3 bg-primary">
                         <CardContent>
                             <DeleteAccountButton />
                         </CardContent>
@@ -67,12 +62,12 @@ export default async function AccountPage() {
                 </div>
 
                 <div className="md:col-span-1">
-                    <h2 className="text-xl font-bold font-display uppercase tracking-wider mb-4 flex items-center gap-2">
-                        <Ticket className="text-accent" /> Mon Billet
+                    <h2 className="text-xl font-bold font-display uppercase tracking-wider mb-4 flex items-center gap-2 text-accent">
+                        Mon Billet
                     </h2>
 
                     {activeTicket ? (
-                        <Card className="border-accent bg-gradient-to-br from-primary to-primary/90 text-primary-foreground overflow-hidden shadow-xl relative">
+                        <Card className="border-accent  border-2 bg-gradient-to-br from-primary to-primary/90 text-primary-foreground overflow-hidden shadow-xl relative">
                             <div className="absolute -left-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-background rounded-full z-10" />
                             <div className="absolute -right-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-background rounded-full z-10" />
 
@@ -81,23 +76,13 @@ export default async function AccountPage() {
                                     {activeTicket.type.name}
                                 </CardTitle>
                                 <div className="text-4xl font-bold font-display my-2">
-                                    {userProfile?.firstName || session.user.name?.split(' ')[0]}
+                                    {`${userProfile?.firstName} ${userProfile?.lastName}`}
                                 </div>
-                                <CardDescription className="text-primary-foreground/70 text-xs uppercase tracking-widest">
-                                    Pass Festival
-                                </CardDescription>
                             </CardHeader>
                             <CardContent className="pt-6 flex flex-col items-center justify-center gap-4">
                                 <div className="bg-white p-2 rounded-lg shadow-inner">
-                                    <img
-                                        src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${activeTicket.qrCode}`}
-                                        alt="Ticket QR Code"
-                                        className="w-32 h-32 object-contain mix-blend-multiply"
-                                    />
+                                    <TicketQRZoom qrCodeUrl={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${activeTicket.qrCode}`} />
                                 </div>
-                                <p className="text-xs text-center opacity-70 font-mono break-all px-4">
-                                    #{activeTicket.id.slice(0, 8)}
-                                </p>
                             </CardContent>
                             <CardFooter className="flex flex-col gap-2 pt-2 pb-6 px-6 bg-black/20">
                                 <div className="text-center w-full mb-2">

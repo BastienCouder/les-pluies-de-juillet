@@ -40,9 +40,6 @@ export function Navbar({ user }: NavbarProps) {
 
                 <div className="hidden md:flex items-center gap-8">
                     <div className="flex items-center gap-6 font-display tracking-wide uppercase">
-                        <Link href="/" className={cn("hover:text-accent transition-colors duration-300", pathname === "/" && "text-accent")}>
-                            Accueil
-                        </Link>
                         <Link href="/billetterie" className={cn("hover:text-accent transition-colors duration-300", pathname === "/billetterie" && "text-accent")}>
                             Billetterie
                         </Link>
