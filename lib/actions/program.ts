@@ -6,7 +6,6 @@ import { and, eq } from "drizzle-orm";
 
 export async function addToProgramAction(conferenceId: string, userId: string) {
     try {
-        // Vérifier si la conférence existe
         const conferenceExists = await db
             .select()
             .from(conference)
@@ -20,7 +19,6 @@ export async function addToProgramAction(conferenceId: string, userId: string) {
             };
         }
 
-        // Vérifier si déjà dans le programme (pour éviter les doublons)
         const existing = await db
             .select()
             .from(userProgramItem)
@@ -39,7 +37,6 @@ export async function addToProgramAction(conferenceId: string, userId: string) {
             };
         }
 
-        // Ajouter au programme
         await db.insert(userProgramItem).values({
             userId,
             conferenceId,

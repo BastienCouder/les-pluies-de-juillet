@@ -19,8 +19,8 @@ export function TicketActions({ ticketId }: { ticketId: string }) {
             const res = await cancelUserTicket(ticketId);
             if (res.success) {
                 toast.success("Billet annulé. Vous pouvez maintenant en choisir un nouveau.");
-                router.refresh(); // Refresh to update UI (ticket gone)
-                router.push("/billetterie"); // Redirect to buy new one
+                router.refresh();
+                router.push("/billetterie");
             } else {
                 toast.error("Erreur: " + res.error);
             }

@@ -101,11 +101,7 @@ export default function AccountForm({
                             type="email"
                             placeholder="email@exemple.com"
                             required
-                            disabled // Email update logic usually requires verification, keeping it disabled for now or simpler logic
                         />
-                        <p className="text-[0.8rem] text-muted-foreground">
-                            L'adresse email ne peut pas être modifiée pour le moment.
-                        </p>
                     </div>
 
                     <div className="flex flex-col gap-3">

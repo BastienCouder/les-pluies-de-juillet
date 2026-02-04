@@ -156,12 +156,10 @@ export async function buyTicket(ticketTypeId: string) {
 
             if (!tType) return { success: false, error: "Ticket not found" };
 
-            // 1. Check Own Stock
             if (tType.soldCount >= tType.capacity) {
                 return { success: false, error: "Sold out (Ticket Limit)" };
             }
 
-            // 1b. Check Sales Dates
             const now = new Date();
             if (tType.salesStartAt && now < tType.salesStartAt) {
                 return { success: false, error: "Sales have not started yet for this ticket." };
@@ -170,11 +168,8 @@ export async function buyTicket(ticketTypeId: string) {
                 return { success: false, error: "Sales have ended for this ticket." };
             }
 
-            // 2. Check Daily Bottlenecks (Global Venue Capacity)
             if (tType.validFrom && tType.validUntil) {
                 const festivalDays = await tx.query.festivalDay.findMany();
-                // We need to fetch ALL active ticket types to calculate current day usage
-                // This is heavy but necessary for correctness without a materialized view
                 const allTypes = await tx.query.ticketType.findMany({
                     where: eq(ticketType.isActive, true)
                 });
@@ -183,7 +178,6 @@ export async function buyTicket(ticketTypeId: string) {
                 const start = new Date(tType.validFrom);
                 const end = new Date(tType.validUntil);
 
-                // Calculate existing usage for all days
                 allTypes.forEach(t => {
                     if (!t.validFrom || !t.validUntil) return;
                     const tStart = new Date(t.validFrom);
@@ -201,7 +195,6 @@ export async function buyTicket(ticketTypeId: string) {
                     });
                 });
 
-                // Check if ADDING this ticket breaks any day limit
                 for (const day of festivalDays) {
                     const dateKey = day.date.toISOString().split('T')[0];
                     const dayStart = new Date(day.date);
@@ -231,7 +224,6 @@ export async function buyTicket(ticketTypeId: string) {
                 qrCode: uuidv4(),
             });
 
-            // Atomic increment
             await tx.update(ticketType)
                 .set({ soldCount: sql`${ticketType.soldCount} + 1` })
                 .where(eq(ticketType.id, tType.id));
@@ -285,12 +277,10 @@ export async function cancelUserTicket(ticketId: string) {
 
             if (!ticketToCancel) return { success: false, error: "Ticket not found or already cancelled" };
 
-            // Update ticket status
             await tx.update(ticket)
                 .set({ status: "REFUNDED" })
                 .where(eq(ticket.id, ticketId));
 
-            // Atomic Decrement
             await tx.update(ticketType)
                 .set({ soldCount: sql`${ticketType.soldCount} - 1` })
                 .where(eq(ticketType.id, ticketToCancel.ticketTypeId));

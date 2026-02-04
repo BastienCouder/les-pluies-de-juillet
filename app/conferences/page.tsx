@@ -1,4 +1,4 @@
-import { getConferences, getUserProgram } from "@/lib/actions/conference"; // You'll need to update actions to support this efficiently or make separate calls
+import { getConferences, getUserProgram } from "@/lib/actions/conference";
 import { ConferenceCard } from "@/components/conferences/conference-card";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";

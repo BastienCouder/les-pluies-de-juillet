@@ -3,10 +3,10 @@
 import { db } from "@/lib/db";
 import { conference } from "@/lib/db/schema/conference";
 import { userProgramItem } from "@/lib/db/schema/conference";
-import { ticket, ticketType } from "@/lib/db/schema/commerce";
-import { auth } from "@/lib/auth"; // Better Auth
+import { ticket } from "@/lib/db/schema/commerce";
+import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-import { eq, and, gte, lte } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 export async function getConferences() {
@@ -33,7 +33,6 @@ export async function getUserProgram() {
             },
         });
 
-        // Flatten to return just conferences
         const conferences = program.map(item => item.conference);
         return { success: true, data: conferences };
     } catch (error) {
@@ -48,19 +47,16 @@ export async function addToProgram(conferenceId: string) {
         if (!session?.user) return { success: false, error: "Unauthorized" };
 
         return await db.transaction(async (tx) => {
-            // 1. Get Conference Details & Lock row for update (if possible, but plain check is ok for now)
             const conf = await tx.query.conference.findFirst({
                 where: eq(conference.id, conferenceId),
             });
 
             if (!conf) return { success: false, error: "Conference not found" };
 
-            // 2. Capacity Check
             if (conf.maxCapacity && conf.attendees >= conf.maxCapacity) {
                 return { success: false, error: "Complet ! Plus de places disponibles." };
             }
 
-            // 3. Check Ticket Validity
             const validTickets = await tx.query.ticket.findMany({
                 where: and(
                     eq(ticket.userId, session.user.id),
@@ -84,13 +80,11 @@ export async function addToProgram(conferenceId: string) {
                 };
             }
 
-            // 4. Add to Program
             await tx.insert(userProgramItem).values({
                 userId: session.user.id,
                 conferenceId: conferenceId,
             });
 
-            // 5. Increment Attendees
             await tx.update(conference)
                 .set({ attendees: conf.attendees + 1 })
                 .where(eq(conference.id, conferenceId));
@@ -115,7 +109,6 @@ export async function removeFromProgram(conferenceId: string) {
         if (!session?.user) return { success: false, error: "Unauthorized" };
 
         return await db.transaction(async (tx) => {
-            // 1. Remove from program
             const deleted = await tx.delete(userProgramItem).where(and(
                 eq(userProgramItem.userId, session.user.id),
                 eq(userProgramItem.conferenceId, conferenceId)
@@ -123,9 +116,6 @@ export async function removeFromProgram(conferenceId: string) {
 
             if (deleted.length === 0) return { success: false, error: "Item not found" };
 
-            // 2. Decrement Attendees
-            // We need to fetch current count first to be safe, or direct raw SQL decrement.
-            // Drizzle doesn't have `increment` helper easily in `set`.
             const conf = await tx.query.conference.findFirst({
                 where: eq(conference.id, conferenceId),
                 columns: { attendees: true }

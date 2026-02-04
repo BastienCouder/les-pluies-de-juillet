@@ -35,7 +35,6 @@ export default async function HomePage() {
         </div>
       </main>
 
-      {/* Simple Footer */}
       <footer className="border-t py-6">
         <div className="container text-center text-sm text-muted-foreground">
           © {new Date().getFullYear()} My App

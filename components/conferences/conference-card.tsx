@@ -2,13 +2,13 @@
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, MapPin, Check, Plus } from "lucide-react"; // lucide-react should be installed
+import { Calendar, MapPin, Check } from "lucide-react";
 import { addToProgram, removeFromProgram } from "@/lib/actions/conference";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-
+import Link from "next/link";
 interface ConferenceCardProps {
     conference: {
         id: string;
@@ -26,8 +26,6 @@ interface ConferenceCardProps {
     isLoggedIn?: boolean;
 }
 
-import Link from "next/link"; // Ensure import
-
 export function ConferenceCard({ conference, isInProgram = false, isLoggedIn = false }: ConferenceCardProps) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
@@ -35,8 +33,7 @@ export function ConferenceCard({ conference, isInProgram = false, isLoggedIn = f
 
     const maxCapacity = conference.maxCapacity || Infinity;
     const attendees = conference.attendees || 0;
-    const isFull = attendees >= maxCapacity && !added; // If added, we are one of the attendees, so we keep 'added' state
-
+    const isFull = attendees >= maxCapacity && !added;
     const handleToggle = async () => {
         if (!isLoggedIn) {
             toast.error("Veuillez vous connecter pour gérer votre programme");

@@ -41,7 +41,6 @@ export default async function AccountPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {/* Left Column: Profile */}
                 <div className="md:col-span-2 space-y-6">
                     <Card className="border-accent/20 bg-card/50 backdrop-blur-sm">
                         <CardHeader>
@@ -67,7 +66,6 @@ export default async function AccountPage() {
                     </Card>
                 </div>
 
-                {/* Right Column: Ticket */}
                 <div className="md:col-span-1">
                     <h2 className="text-xl font-bold font-display uppercase tracking-wider mb-4 flex items-center gap-2">
                         <Ticket className="text-accent" /> Mon Billet
@@ -75,7 +73,6 @@ export default async function AccountPage() {
 
                     {activeTicket ? (
                         <Card className="border-accent bg-gradient-to-br from-primary to-primary/90 text-primary-foreground overflow-hidden shadow-xl relative">
-                            {/* Decorative circles */}
                             <div className="absolute -left-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-background rounded-full z-10" />
                             <div className="absolute -right-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-background rounded-full z-10" />
 
@@ -92,7 +89,6 @@ export default async function AccountPage() {
                             </CardHeader>
                             <CardContent className="pt-6 flex flex-col items-center justify-center gap-4">
                                 <div className="bg-white p-2 rounded-lg shadow-inner">
-                                    {/* QR Code Simulation */}
                                     <img
                                         src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${activeTicket.qrCode}`}
                                         alt="Ticket QR Code"

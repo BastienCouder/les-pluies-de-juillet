@@ -7,7 +7,6 @@ async function main() {
     console.log("🌱 Seeding database...");
     console.log("Cleaning up old data...");
     try {
-        // Delete dependent tables first
         console.log("Deleting tickets...");
         await db.delete(ticket);
         console.log("Deleting orders...");

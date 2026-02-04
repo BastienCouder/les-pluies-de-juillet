@@ -31,7 +31,7 @@ export default async function MyProgramPage() {
                     <ConferenceCard
                         key={conf.id}
                         conference={conf}
-                        isInProgram={true} // By definition, they are in program
+                        isInProgram={true}
                         isLoggedIn={true}
                     />
                 ))}

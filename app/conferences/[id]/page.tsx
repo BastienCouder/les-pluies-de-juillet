@@ -9,7 +9,6 @@ import { Calendar, MapPin, User, Clock, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-// Force dynamic rendering to handle session and DB updates
 export const dynamic = "force-dynamic";
 
 export default async function ConferenceDetailPage({
@@ -19,7 +18,6 @@ export default async function ConferenceDetailPage({
 }) {
     const { id } = await params;
 
-    // 1. Fetch Conference
     const conf = await db.query.conference.findFirst({
         where: eq(conference.id, id),
     });
@@ -28,7 +26,6 @@ export default async function ConferenceDetailPage({
         notFound();
     }
 
-    // 2. Fetch User Status (Logged in? In program?)
     const session = await auth.api.getSession({ headers: await headers() });
     let isInProgram = false;
 
@@ -42,7 +39,6 @@ export default async function ConferenceDetailPage({
         isInProgram = !!item;
     }
 
-    // 3. Status helpers
     const maxCapacity = conf.maxCapacity || Infinity;
     const attendees = conf.attendees || 0;
     const isFull = attendees >= maxCapacity;
@@ -105,7 +101,6 @@ export default async function ConferenceDetailPage({
                     </div>
 
                     <div className="w-full md:w-80 space-y-6">
-                        {/* Capacity Card */}
                         <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
                             <h3 className="font-bold uppercase mb-4 text-center">État des inscriptions</h3>
                             {isFull && !isInProgram ? (
@@ -142,7 +137,6 @@ export default async function ConferenceDetailPage({
                                     ) : (
                                         <p>Inscrivez-vous via la liste principale.</p>
                                     )}
-                                    {/* Note: Could add Client Component for action button here if needed */}
                                 </div>
                             )}
                         </div>
@@ -152,7 +146,6 @@ export default async function ConferenceDetailPage({
         </div>
     );
 }
-// Helper icon
 function Check({ className }: { className?: string }) {
     return (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
